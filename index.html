@@ -198,22 +198,23 @@ function stHTML(st,h){return `<div class="hero">${h.map(i=>`<div>${ico(st[i][1])
 const ABBR={"Mercedes":"MER","Ferrari":"FER","McLaren":"MCL","Red Bull":"RBR","Racing Bulls":"RB","Alpine":"ALP","Haas":"HAA","Audi":"AUD","Aston Martin":"AMR","Williams":"WIL","Cadillac":"CAD","Aprilia Racing":"APR","Trackhouse":"TRK","Ducati Lenovo Team":"DUC","VR46":"VR4","Gresini":"GRE","Red Bull KTM Factory":"KTM","KTM Tech3":"TE3","Honda HRC":"HRC","LCR Honda":"LCR","Yamaha":"YAM","Pramac Yamaha":"PRA"};
 function tg(t){if(!t)return"";const c=COL[t]||"#888",m=/^#/.test(c)?c.match(/\w\w/g).map(h=>parseInt(h,16)):[136,136,136],l=.299*m[0]+.587*m[1]+.114*m[2];return `<span class="tg" style="background:${c};color:${l>150?"#15151e":"#fff"}">${ABBR[t]||t.slice(0,3).toUpperCase()}</span>`}
 const DATA={
-  round:16, total:22, after:"Grand Prix du Japon (Motegi)", date:"4 octobre 2026",
-  next:"Indonésie (Mandalika)", nextDate:"11 octobre 2026",
+  round:17, total:22, after:"Grand Prix d'Indonésie (Mandalika)", date:"11 octobre 2026",
+  next:"Australie (Phillip Island)", nextDate:"25 octobre 2026",
   drivers:[
-    ["Jorge Martín","Aprilia Racing",333],["Marc Márquez","Ducati Lenovo Team",331],
-    ["Marco Bezzecchi","Aprilia Racing",284],["Pedro Acosta","Red Bull KTM Factory",243],
-    ["Ai Ogura","Trackhouse",237],["Fabio Di Giannantonio","VR46",230],
-    ["Raúl Fernández","Trackhouse",216],["Francesco Bagnaia","Ducati Lenovo Team",164],
-    ["Álex Márquez","Gresini",158],["Fermín Aldeguer","Gresini",122],
-    ["Enea Bastianini","KTM Tech3",116],["Luca Marini","Honda HRC",104],
-    ["Brad Binder","Red Bull KTM Factory",99],["Diogo Moreira","LCR Honda",74],
-    ["Fabio Quartararo","Yamaha",66],["Franco Morbidelli","VR46",57],
-    ["Johann Zarco","LCR Honda",48],["Joan Mir","Honda HRC",33],
-    ["Jack Miller","Pramac Yamaha",28],["Álex Rins","Yamaha",24],
+    ["Jorge Martín","Aprilia Racing",355],["Marc Márquez","Ducati Lenovo Team",353],
+    ["Marco Bezzecchi","Aprilia Racing",309],["Ai Ogura","Trackhouse",259],
+    ["Pedro Acosta","Red Bull KTM Factory",258],["Fabio Di Giannantonio","VR46",245],
+    ["Raúl Fernández","Trackhouse",236],["Álex Márquez","Gresini",172],
+    ["Francesco Bagnaia","Ducati Lenovo Team",166],["Fermín Aldeguer","Gresini",125],
+    ["Enea Bastianini","KTM Tech3",122],["Luca Marini","Honda HRC",108],
+    ["Brad Binder","Red Bull KTM Factory",104],["Fabio Quartararo","Yamaha",74],
+    ["Diogo Moreira","LCR Honda",74],["Franco Morbidelli","VR46",59],
+    ["Johann Zarco","LCR Honda",51],["Joan Mir","Honda HRC",33],
+    ["Jack Miller","Pramac Yamaha",28],["Álex Rins","Yamaha",25],
     ["Toprak Razgatlıoğlu","Pramac Yamaha",18],["Maverick Viñales","KTM Tech3",12],
     ["Iker Lecuona","Gresini",9],["Augusto Fernández","Yamaha",6],
-    ["Pol Espargaró","KTM Tech3",5],["Takaaki Nakagami","Honda HRC",3]
+    ["Pol Espargaró","KTM Tech3",5],["Somkiat Chantra","Honda HRC",3],
+    ["Takaaki Nakagami","Honda HRC",3]
   ]
 };
 const C={A:"#a43fd4",D:"#d11a2a",K:"#ff6a13",H:"#f2c200",Y:"#1e5cff"};
@@ -240,7 +241,8 @@ const RACES=[
 ["Tchéquie","21 juin","Marc Márquez","Ducati Lenovo Team"],["Pays-Bas","28 juin","Ai Ogura","Trackhouse"],
 ["Allemagne","12 juil.","Marc Márquez","Ducati Lenovo Team"],["Grande-Bretagne","9 août","Raúl Fernández","Trackhouse"],
 ["Aragon","30 août","Marc Márquez","Ducati Lenovo Team"],["Saint-Marin","13 sept.","Marc Márquez","Ducati Lenovo Team"],
-["Autriche","20 sept.","Pedro Acosta","Red Bull KTM Factory"],["Japon","4 oct.","Marc Márquez","Ducati Lenovo Team"]
+["Autriche","20 sept.","Pedro Acosta","Red Bull KTM Factory"],["Japon","4 oct.","Marc Márquez","Ducati Lenovo Team"],
+["Indonésie","11 oct.","Marco Bezzecchi","Aprilia Racing"]
 ];
 const N={BEZ:"Marco Bezzecchi",ACO:"Pedro Acosta",RFE:"Raúl Fernández",MAR:"Jorge Martín",OGU:"Ai Ogura",DIG:"Fabio Di Giannantonio",BIN:"Brad Binder",MOR:"Franco Morbidelli",BAG:"Francesco Bagnaia",MRN:"Luca Marini",ZAR:"Johann Zarco",BAS:"Enea Bastianini",MRA:"Diogo Moreira",QUA:"Fabio Quartararo",RIN:"Álex Rins",VIN:"Maverick Viñales",RAZ:"Toprak Razgatlıoğlu",MIL:"Jack Miller",PIR:"Michele Pirro",MIR:"Joan Mir",AMQ:"Álex Márquez",MMQ:"Marc Márquez",ALD:"Fermín Aldeguer",ESP:"Pol Espargaró",AFE:"Augusto Fernández",CRU:"Cal Crutchlow",LEC:"Iker Lecuona",SAV:"Lorenzo Savadori",FOL:"Jonas Folger",NAK:"Takaaki Nakagami",CHA:"Somkiat Chantra"};
 const TEAM={"Michele Pirro":"Gresini","Cal Crutchlow":"LCR Honda","Lorenzo Savadori":"Aprilia Racing","Jonas Folger":"KTM Tech3","Somkiat Chantra":"Honda HRC"};DATA.drivers.forEach(d=>TEAM[d[0]]=d[1]);
@@ -261,9 +263,10 @@ const RES=[
 "MMQ ACO BEZ AMQ MAR ALD DIG BAS MRA BIN MIL MIR RIN MRN ZAR ESP SAV QUA | RAZ RFE BAG MOR",
 "MMQ AMQ ACO ALD MAR RFE DIG BAS MRN QUA BIN RAZ MOR ESP | ZAR RIN BAG MIR MRA MIL BEZ",
 "ACO MAR BEZ OGU MMQ BIN BAG ALD DIG ZAR BAS RFE NAK MRN MRA ESP QUA MOR RIN RAZ MIL | AMQ",
-"MMQ MAR BEZ BAS RFE OGU ACO BAG ALD MRN BIN QUA CHA VIN MOR RIN RAZ DIG MIL ZAR | AMQ MRA"
+"MMQ MAR BEZ BAS RFE OGU ACO BAG ALD MRN BIN QUA CHA VIN MOR RIN RAZ DIG MIL ZAR | AMQ MRA",
+"BEZ RFE MAR OGU ACO MMQ AMQ DIG QUA BAS BIN MRN ZAR MOR RIN MRA VIN | RAZ BAG MIL ALD"
 ];
-const NOTE={7:"Seuls les 15 premiers sont confirmés ; l'ordre de Quartararo, Mir et Crutchlow (après la 15e place) n'a pas pu être vérifié. Martín, Bezzecchi, R. Fernández et Aldeguer ont chuté au premier virage.",8:"Bezzecchi était suspendu pour cette course ; Á. Márquez a déclaré forfait et Zarco était absent (blessés).",9:"Classement après pénalités (limites de piste, pression des pneus). Aldeguer et Zarco absents (blessés).",10:"Bezzecchi, Aldeguer et Zarco absents (blessés).",12:"Ogura (blessé) remplacé par Savadori ; Viñales (blessé) remplacé par Espargaró ; retour de Zarco et Aldeguer.",13:"Ogura toujours absent (blessé, sans remplaçant indiqué) ; Espargaró remplace Viñales.",14:"Mir absent, remplacé par Nakagami ; Espargaró remplace Viñales. Aldeguer rétrogradé en 8e position après pénalité.",15:"Mir absent ; Chantra remplace Nakagami (blessé) chez Honda. Á. Márquez et Zarco ont chuté après leur double long lap."};
+const NOTE={7:"Seuls les 15 premiers sont confirmés ; l'ordre de Quartararo, Mir et Crutchlow (après la 15e place) n'a pas pu être vérifié. Martín, Bezzecchi, R. Fernández et Aldeguer ont chuté au premier virage.",8:"Bezzecchi était suspendu pour cette course ; Á. Márquez a déclaré forfait et Zarco était absent (blessés).",9:"Classement après pénalités (limites de piste, pression des pneus). Aldeguer et Zarco absents (blessés).",10:"Bezzecchi, Aldeguer et Zarco absents (blessés).",12:"Ogura (blessé) remplacé par Savadori ; Viñales (blessé) remplacé par Espargaró ; retour de Zarco et Aldeguer.",13:"Ogura toujours absent (blessé, sans remplaçant indiqué) ; Espargaró remplace Viñales.",14:"Mir absent, remplacé par Nakagami ; Espargaró remplace Viñales. Aldeguer rétrogradé en 8e position après pénalité.",15:"Mir absent ; Chantra remplace Nakagami (blessé) chez Honda. Á. Márquez et Zarco ont chuté après leur double long lap.",16:"Maverick Viñales a reçu une pénalité de 16 s après la course (pression de pneus), sans effet sur son classement selon crash.net. Aleix Espargaró a déclaré forfait."};
 function detail(i){
   const s=RES[i];
   if(!s)return '<div class="nodet">Classement complet bientôt disponible.</div>';
@@ -278,7 +281,7 @@ const T={};DATA.drivers.forEach(d=>T[d[1]]=(T[d[1]]||0)+d[2]);
 const TL=Object.entries(T).sort((a,b)=>b[1]-a[1]);
 document.getElementById("cons").innerHTML=TL.map((t,i)=>{const c=COL[t[0]]||"#888",gap=i?"−"+(TL[0][1]-t[1])+" pts":"Leader";
 return `<div class="row drv tm${OPEN.has("T:"+t[0])?" open":""}" data-t="${t[0]}" style="--tc:${c}"><div class="pos">${i+1}</div><div><div class="name"><span class="dot" style="background:${c}"></span>${t[0]}<span class="chev">▼</span></div><div class="bar"><i style="width:${t[1]/TL[0][1]*100}%;background:${c}"></i></div></div><div class="pts">${t[1]}<span class="gap">${gap}</span></div><div class="dh">${OPEN.has("T:"+t[0])?thist(t[0]):""}</div></div>`}).join("");
-const UP=[["Indonésie (Mandalika)","11 oct."],["Australie (Phillip Island)","25 oct."],["Malaisie (Sepang)","1 nov."],["Qatar","8 nov."],["Portugal","22 nov."],["Valence","29 nov."]];
+const UP=[["Australie (Phillip Island)","25 oct."],["Malaisie (Sepang)","1 nov."],["Qatar","8 nov."],["Portugal","22 nov."],["Valence","29 nov."]];
 document.getElementById("cal").innerHTML=RACES.map((r,i)=>`<div class="crow done" data-g="${r[0]}"><span class="rp">${i+1}</span><div><b>GP ${r[0]}</b><small>Vainqueur : ${r[2]}</small></div><span class="d">${r[1]}</span><div class="cc"></div></div>`).join("")+UP.map((u,i)=>`<div class="crow${i?"":" nx"}" data-g="${u[0]}"><span class="rp">${RACES.length+i+1}</span><div><b>GP ${u[0]}</b><small>${i?"À venir":"Prochain Grand Prix"}</small></div><span class="d">${u[1]}</span><div class="cc"></div></div>`).join("");
 document.getElementById("nextbox").onclick=function(){const c=document.getElementById("cal");c.hidden=!c.hidden;this.classList.toggle("open",!c.hidden)};
 function tab(n){["1","2","3"].forEach(k=>{document.getElementById("v"+k).hidden=k!=n;document.getElementById("t"+k).classList.toggle("on",k==n)})}
