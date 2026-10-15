@@ -143,9 +143,10 @@ input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--lin
 <p class="sub" id="sub"></p>
 <div class="next" id="nextbox"><span>Prochain GP : <b id="nx"></b> <span class="chev">▼</span></span><span id="nd"></span></div>
 <div id="cal" hidden></div>
-<div class="tabs"><button id="t1" class="on">Classement pilotes</button><button id="t2">Courses</button><button id="t3">Classement équipes</button></div>
+<div class="tabs"><button id="t1" class="on">Classement pilotes</button><button id="t4">Qualifications</button><button id="t2">Courses</button><button id="t3">Classement équipes</button></div>
 <div id="v1"><input id="q" type="search" placeholder="Rechercher un pilote ou une écurie…">
 <div id="list"></div></div>
+<div id="v4" hidden><div id="quals"></div></div>
 <div id="v2" hidden><div id="races"></div></div>
 <div id="v3" hidden><div id="cons"></div></div>
 <p class="foot">Mis à jour après chaque Grand Prix.</p>
@@ -244,7 +245,7 @@ const RACES=[
 ["Autriche","20 sept.","Pedro Acosta","Red Bull KTM Factory"],["Japon","4 oct.","Marc Márquez","Ducati Lenovo Team"],
 ["Indonésie","11 oct.","Marco Bezzecchi","Aprilia Racing"]
 ];
-const N={BEZ:"Marco Bezzecchi",ACO:"Pedro Acosta",RFE:"Raúl Fernández",MAR:"Jorge Martín",OGU:"Ai Ogura",DIG:"Fabio Di Giannantonio",BIN:"Brad Binder",MOR:"Franco Morbidelli",BAG:"Francesco Bagnaia",MRN:"Luca Marini",ZAR:"Johann Zarco",BAS:"Enea Bastianini",MRA:"Diogo Moreira",QUA:"Fabio Quartararo",RIN:"Álex Rins",VIN:"Maverick Viñales",RAZ:"Toprak Razgatlıoğlu",MIL:"Jack Miller",PIR:"Michele Pirro",MIR:"Joan Mir",AMQ:"Álex Márquez",MMQ:"Marc Márquez",ALD:"Fermín Aldeguer",ESP:"Pol Espargaró",AFE:"Augusto Fernández",CRU:"Cal Crutchlow",LEC:"Iker Lecuona",SAV:"Lorenzo Savadori",FOL:"Jonas Folger",NAK:"Takaaki Nakagami",CHA:"Somkiat Chantra"};
+const N={BEZ:"Marco Bezzecchi",ACO:"Pedro Acosta",RFE:"Raúl Fernández",MAR:"Jorge Martín",OGU:"Ai Ogura",DIG:"Fabio Di Giannantonio",BIN:"Brad Binder",MOR:"Franco Morbidelli",BAG:"Francesco Bagnaia",MRN:"Luca Marini",ZAR:"Johann Zarco",BAS:"Enea Bastianini",MRA:"Diogo Moreira",QUA:"Fabio Quartararo",RIN:"Álex Rins",VIN:"Maverick Viñales",RAZ:"Toprak Razgatlıoğlu",MIL:"Jack Miller",PIR:"Michele Pirro",MIR:"Joan Mir",AMQ:"Álex Márquez",MMQ:"Marc Márquez",ALD:"Fermín Aldeguer",ESP:"Pol Espargaró",AFE:"Augusto Fernández",CRU:"Cal Crutchlow",LEC:"Iker Lecuona",SAV:"Lorenzo Savadori",FOL:"Jonas Folger",NAK:"Takaaki Nakagami",CHA:"Somkiat Chantra",AES:"Aleix Espargaró"};
 const TEAM={"Michele Pirro":"Gresini","Cal Crutchlow":"LCR Honda","Lorenzo Savadori":"Aprilia Racing","Jonas Folger":"KTM Tech3","Somkiat Chantra":"Honda HRC"};DATA.drivers.forEach(d=>TEAM[d[0]]=d[1]);
 /* Ordre d'arrivée : classés | abandons. null = pas encore renseigné (une entrée par Grand Prix, dans l'ordre) */
 const RES=[
@@ -274,6 +275,34 @@ function detail(i){
   const row=(c,k)=>{const n=N[c],t=TEAM[n]||"",col=COL[t]||"#888";return `<div class="rr"><span class="rp">${k}</span><span class="dot" style="background:${col}"></span><span>${n}${tg(t)}</span><span class="rt">${t}</span></div>`};
   return p[0].map((c,k)=>row(c,k+1)).join("")+(p[1]||[]).map(c=>row(c,"—")).join("")+'<div class="note">— : abandon ou non classé</div>'+(NOTE[i]?'<div class="note">'+NOTE[i]+'</div>':"");
 }
+const QU=[
+["1:28.652","BEZ MMQ RFE DIG MAR ACO AMQ OGU MOR MIR BIN ZAR BAG MRN MRA QUA VIN MIL RIN BAS RAZ PIR"],
+["1:17.410","DIG BEZ MMQ QUA MAR OGU ALD AMQ ACO ZAR BAG RAZ MIR MRA MOR RFE RIN MIL MRN VIN BIN BAS"],
+["2:00.136","DIG BEZ ACO BAG MIR MMQ MAR AMQ MRN ALD OGU BAS RFE MRA ZAR QUA RAZ BIN MIL MOR RIN"],
+["1:48.087","MMQ ZAR DIG BEZ AMQ ACO MAR BAS RFE BAG OGU ALD BIN MIR MRN AFE QUA MOR RAZ SAV RIN MIL MRA"],
+["1:29.634","BAG MMQ BEZ DIG ACO QUA MIR MAR OGU AMQ ZAR RIN RFE BAS MRN MOR RAZ MRA MIL ALD BIN FOL"],
+["1:38.068","ACO MOR AMQ RFE ZAR DIG QUA BIN MAR MIR MIL BEZ BAG BAS ALD MRN VIN OGU RIN MRA AFE RAZ"],
+["1:43.921","BEZ RFE MAR MMQ ALD BAG DIG MRA MOR ACO BAS RIN OGU BIN MIR MRN MIL QUA VIN RAZ PIR CRU"],
+["1:36.785","MMQ ACO ALD DIG BAG BEZ RFE MAR MRN OGU MRA MIL MIR BAS QUA LEC BIN RAZ MOR RIN VIN CRU"],
+["1:51.139","OGU DIG BAG BEZ MMQ MRA RFE ACO MOR MAR ALD MIR VIN AMQ QUA MRN BAS MIL RIN BIN RAZ CRU"],
+["1:30.812","MAR OGU BEZ RFE BAG DIG MMQ ACO QUA MIR BAS AMQ MOR MRA BIN RIN MRN MIL VIN AFE CRU RAZ"],
+["1:19.041","MMQ AMQ DIG RFE OGU QUA MOR BEZ MAR ACO BAG MIL MIR MRN MRA BIN BAS RAZ RIN VIN CRU"],
+["1:56.160","MAR RFE OGU DIG BEZ MMQ AMQ MOR ACO LEC MIL MIR QUA MRA MRN BAG RIN BIN BAS CRU ESP RAZ AFE"],
+["1:44.962","BEZ MMQ AMQ RFE MAR ACO DIG BAG ZAR MRA ALD MOR MIL BIN MIR BAS QUA MRN RIN ESP RAZ SAV"],
+["1:29.982","BEZ MMQ ALD DIG MAR MRN ACO MOR AMQ RFE ZAR ESP QUA BAG MRA BAS MIR MIL BIN RIN RAZ"],
+["1:27.917","MAR MMQ ACO BEZ OGU AMQ BAG DIG QUA ZAR BIN ALD RFE ESP MRN MRA BAS NAK MOR RIN MIL RAZ"],
+["1:42.371","MAR MMQ ACO BEZ AMQ DIG BAS RFE MRA ZAR OGU QUA BAG MOR CHA MRN BIN ALD VIN MIL RIN RAZ"],
+["1:28.852","RFE BEZ DIG MMQ MAR ALD OGU AMQ ACO BAG MOR QUA RIN BAS MRN BIN MIL VIN RAZ ZAR MRA AES"]
+];
+function qdetail(i){
+  const q=QU[i];if(!q)return '<div class="nodet">Résultats des qualifications bientôt disponibles.</div>';
+  const c=q[1].split(" ");
+  const row=(k,x)=>{const n=N[x]||x,t=TEAM[n]||"",col=COL[t]||"#888";return `<div class="rr"><span class="rp">${k+1}</span><span class="dot" style="background:${col}"></span><span>${n}${tg(t)}</span><span class="rt">${k===0?q[0]+" · ":""}${k<12?"Q2":"Q1"}</span></div>`};
+  return c.map((x,k)=>row(k,x)).join("")+'<div class="note">Q2 : les 12 premiers · Q1 : les autres pilotes. Temps affiché : meilleur tour de la pole. Sources : Wikipédia, Crash.net.</div>';
+}
+document.getElementById("quals").innerHTML=RACES.map((r,i)=>{if(!QU[i])return"";const p=N[QU[i][1].split(" ")[0]],t=TEAM[p]||"",c=COL[t]||"#888";
+return `<div class="race" data-i="${i}"><div class="rd">${i+1}</div><div><div class="gp">GP ${r[0]}<span class="chev">▼</span></div><div class="dt">${r[1]} 2026</div></div><div class="win"><span class="dot" style="background:${c};display:inline-block;margin-right:5px"></span>${p}<small>Pole · ${QU[i][0]}</small></div><div class="det">${qdetail(i)}</div></div>`}).reverse().join("");
+document.getElementById("quals").addEventListener("click",e=>{const r=e.target.closest(".race");if(r)r.classList.toggle("open")});
 document.getElementById("races").innerHTML=RACES.map((r,i)=>{const c=COL[r[3]]||"#888";
 return `<div class="race" data-i="${i}"><div class="rd">${i+1}</div><div><div class="gp">GP ${r[0]}<span class="chev">▼</span></div><div class="dt">${r[1]} 2026</div></div><div class="win"><span class="dot" style="background:${c};display:inline-block;margin-right:5px"></span>${r[2]}<small>${r[3]}</small></div><div class="det">${detail(i)}</div></div>`}).reverse().join("");
 document.getElementById("races").addEventListener("click",e=>{const r=e.target.closest(".race");if(r)r.classList.toggle("open")});
@@ -284,8 +313,8 @@ return `<div class="row drv tm${OPEN.has("T:"+t[0])?" open":""}" data-t="${t[0]}
 const UP=[["Australie (Phillip Island)","25 oct."],["Malaisie (Sepang)","1 nov."],["Qatar","8 nov."],["Portugal","22 nov."],["Valence","29 nov."]];
 document.getElementById("cal").innerHTML=RACES.map((r,i)=>`<div class="crow done" data-g="${r[0]}"><span class="rp">${i+1}</span><div><b>GP ${r[0]}</b><small>Vainqueur : ${r[2]}</small></div><span class="d">${r[1]}</span><div class="cc"></div></div>`).join("")+UP.map((u,i)=>`<div class="crow${i?"":" nx"}" data-g="${u[0]}"><span class="rp">${RACES.length+i+1}</span><div><b>GP ${u[0]}</b><small>${i?"À venir":"Prochain Grand Prix"}</small></div><span class="d">${u[1]}</span><div class="cc"></div></div>`).join("");
 document.getElementById("nextbox").onclick=function(){const c=document.getElementById("cal");c.hidden=!c.hidden;this.classList.toggle("open",!c.hidden)};
-function tab(n){["1","2","3"].forEach(k=>{document.getElementById("v"+k).hidden=k!=n;document.getElementById("t"+k).classList.toggle("on",k==n)})}
-["1","2","3"].forEach(k=>document.getElementById("t"+k).onclick=()=>tab(k));
+function tab(n){["1","4","2","3"].forEach(k=>{document.getElementById("v"+k).hidden=k!=n;document.getElementById("t"+k).classList.toggle("on",k==n)})}
+["1","4","2","3"].forEach(k=>document.getElementById("t"+k).onclick=()=>tab(k));
 
 /* ===== Fiche pilote : historique + photo ===== */
 const PH={};
