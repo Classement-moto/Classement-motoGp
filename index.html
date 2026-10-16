@@ -149,7 +149,7 @@ input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--lin
 <div id="v4" hidden><div id="quals"></div></div>
 <div id="v2" hidden><div id="races"></div></div>
 <div id="v3" hidden><div id="cons"></div></div>
-<p class="foot">Mis à jour après chaque Grand Prix.</p>
+<p class="foot">Chargement des données en direct…</p>
 <script>
 const OPEN=new Set();
 const CIRC={"Thaïlande": ["Chang International Circuit", "chang"], "Brésil": ["Autódromo Internacional Ayrton Senna Goiânia", "goi"], "États-Unis": ["Circuit of the Americas", "americas"], "Espagne": ["Circuito de Jerez", "jerez"], "France": ["Bugatti Circuit", "bugatti"], "Catalogne": ["Circuit de Barcelona-Catalunya", "catalunya"], "Italie": ["Mugello Circuit", "mugello"], "Hongrie": ["Balaton Park Circuit", "balaton"], "Tchéquie": ["Brno Circuit", "brno"], "Pays-Bas": ["TT Circuit Assen", "assen"], "Allemagne": ["Sachsenring", "sachsenring"], "Grande-Bretagne": ["Silverstone Circuit", "silverstone"], "Aragon": ["MotorLand Aragón", "motorland"], "Saint-Marin": ["Misano World Circuit Marco Simoncelli", "misano"], "Autriche": ["Red Bull Ring", "redbullring"], "Japon": ["Mobility Resort Motegi", "motegi"], "Indonésie": ["Mandalika International Street Circuit", "mandalika"], "Australie": ["Phillip Island Grand Prix Circuit", "phillipisland"], "Malaisie": ["Sepang International Circuit", "sepang"], "Qatar": ["Lusail International Circuit", "lusail"], "Portugal": ["Algarve International Circuit", "algarve"], "Valence": ["Circuit Ricardo Tormo", "tormo"]};
@@ -198,7 +198,7 @@ function ico(l){return l.startsWith("Victoires")?"🏆":l.startsWith("Podiums")?
 function stHTML(st,h){return `<div class="hero">${h.map(i=>`<div>${ico(st[i][1])?`<em>${ico(st[i][1])}</em>`:""}<b>${st[i][0]}</b>${st[i][1]}</div>`).join("")}</div><div class="st">${st.filter((_,i)=>!h.includes(i)).map(a=>`<div><b>${a[0]}</b>${a[1]}</div>`).join("")}</div>`}
 const ABBR={"Mercedes":"MER","Ferrari":"FER","McLaren":"MCL","Red Bull":"RBR","Racing Bulls":"RB","Alpine":"ALP","Haas":"HAA","Audi":"AUD","Aston Martin":"AMR","Williams":"WIL","Cadillac":"CAD","Aprilia Racing":"APR","Trackhouse":"TRK","Ducati Lenovo Team":"DUC","VR46":"VR4","Gresini":"GRE","Red Bull KTM Factory":"KTM","KTM Tech3":"TE3","Honda HRC":"HRC","LCR Honda":"LCR","Yamaha":"YAM","Pramac Yamaha":"PRA"};
 function tg(t){if(!t)return"";const c=COL[t]||"#888",m=/^#/.test(c)?c.match(/\w\w/g).map(h=>parseInt(h,16)):[136,136,136],l=.299*m[0]+.587*m[1]+.114*m[2];return `<span class="tg" style="background:${c};color:${l>150?"#15151e":"#fff"}">${ABBR[t]||t.slice(0,3).toUpperCase()}</span>`}
-const DATA={
+let DATA={
   round:17, total:22, after:"Grand Prix d'Indonésie (Mandalika)", date:"11 octobre 2026",
   next:"Australie (Phillip Island)", nextDate:"25 octobre 2026",
   drivers:[
@@ -220,12 +220,8 @@ const DATA={
 };
 const C={A:"#a43fd4",D:"#d11a2a",K:"#ff6a13",H:"#f2c200",Y:"#1e5cff"};
 const COL={"Aprilia Racing":C.A,"Trackhouse":C.A,"Ducati Lenovo Team":C.D,"VR46":C.D,"Gresini":C.D,"Red Bull KTM Factory":C.K,"KTM Tech3":C.K,"Honda HRC":C.H,"LCR Honda":C.H,"Yamaha":C.Y,"Pramac Yamaha":C.Y};
-document.getElementById("sub").textContent="Après la manche "+DATA.round+"/"+DATA.total+" · "+DATA.after+" · "+DATA.date;
-document.getElementById("nx").textContent=DATA.next;
-document.getElementById("nd").textContent=DATA.nextDate;
-const max=DATA.drivers[0][2];
 function render(f){
-  const t=(f||"").toLowerCase();
+  const t=(f||"").toLowerCase(),max=DATA.drivers[0][2]||1;
   document.getElementById("list").innerHTML=DATA.drivers.map((d,i)=>{
     if(t&&!(d[0]+" "+d[1]).toLowerCase().includes(t))return"";
     const c=COL[d[1]]||"#888",gap=i?"−"+(max-d[2])+" pts":"Leader";
@@ -233,8 +229,7 @@ function render(f){
   }).join("");
 }
 document.getElementById("q").addEventListener("input",e=>render(e.target.value));
-render();
-const RACES=[
+let RACES=[
 ["Thaïlande","1 mars","Marco Bezzecchi","Aprilia Racing"],["Brésil","22 mars","Marco Bezzecchi","Aprilia Racing"],
 ["États-Unis","29 mars","Marco Bezzecchi","Aprilia Racing"],["Espagne","26 avr.","Álex Márquez","Gresini"],
 ["France","10 mai","Jorge Martín","Aprilia Racing"],["Catalogne","17 mai","Fabio Di Giannantonio","VR46"],
@@ -248,7 +243,7 @@ const RACES=[
 const N={BEZ:"Marco Bezzecchi",ACO:"Pedro Acosta",RFE:"Raúl Fernández",MAR:"Jorge Martín",OGU:"Ai Ogura",DIG:"Fabio Di Giannantonio",BIN:"Brad Binder",MOR:"Franco Morbidelli",BAG:"Francesco Bagnaia",MRN:"Luca Marini",ZAR:"Johann Zarco",BAS:"Enea Bastianini",MRA:"Diogo Moreira",QUA:"Fabio Quartararo",RIN:"Álex Rins",VIN:"Maverick Viñales",RAZ:"Toprak Razgatlıoğlu",MIL:"Jack Miller",PIR:"Michele Pirro",MIR:"Joan Mir",AMQ:"Álex Márquez",MMQ:"Marc Márquez",ALD:"Fermín Aldeguer",ESP:"Pol Espargaró",AFE:"Augusto Fernández",CRU:"Cal Crutchlow",LEC:"Iker Lecuona",SAV:"Lorenzo Savadori",FOL:"Jonas Folger",NAK:"Takaaki Nakagami",CHA:"Somkiat Chantra",AES:"Aleix Espargaró"};
 const TEAM={"Michele Pirro":"Gresini","Cal Crutchlow":"LCR Honda","Lorenzo Savadori":"Aprilia Racing","Jonas Folger":"KTM Tech3","Somkiat Chantra":"Honda HRC"};DATA.drivers.forEach(d=>TEAM[d[0]]=d[1]);
 /* Ordre d'arrivée : classés | abandons. null = pas encore renseigné (une entrée par Grand Prix, dans l'ordre) */
-const RES=[
+let RES=[
 "BEZ ACO RFE MAR OGU DIG BIN MOR BAG MRN ZAR BAS MRA QUA RIN VIN RAZ MIL PIR | MIR AMQ MMQ",
 "BEZ MAR DIG MMQ OGU AMQ ACO ALD ZAR RFE MRN MOR MRA RIN BAS QUA RAZ VIN | MIR BAG BIN MIL",
 "BEZ MAR ACO DIG MMQ BAS AMQ RFE MRN BAG ALD BIN MRA MOR RAZ MIL QUA RIN | ZAR OGU MIR VIN",
@@ -275,7 +270,7 @@ function detail(i){
   const row=(c,k)=>{const n=N[c],t=TEAM[n]||"",col=COL[t]||"#888";return `<div class="rr"><span class="rp">${k}</span><span class="dot" style="background:${col}"></span><span>${n}${tg(t)}</span><span class="rt">${t}</span></div>`};
   return p[0].map((c,k)=>row(c,k+1)).join("")+(p[1]||[]).map(c=>row(c,"—")).join("")+'<div class="note">— : abandon ou non classé</div>'+(NOTE[i]?'<div class="note">'+NOTE[i]+'</div>':"");
 }
-const QU=[
+let QU=[
 ["1:28.652","BEZ MMQ RFE DIG MAR ACO AMQ OGU MOR MIR BIN ZAR BAG MRN MRA QUA VIN MIL RIN BAS RAZ PIR"],
 ["1:17.410","DIG BEZ MMQ QUA MAR OGU ALD AMQ ACO ZAR BAG RAZ MIR MRA MOR RFE RIN MIL MRN VIN BIN BAS"],
 ["2:00.136","DIG BEZ ACO BAG MIR MMQ MAR AMQ MRN ALD OGU BAS RFE MRA ZAR QUA RAZ BIN MIL MOR RIN"],
@@ -300,21 +295,31 @@ function qdetail(i){
   const row=(k,x)=>{const n=N[x]||x,t=TEAM[n]||"",col=COL[t]||"#888";return `<div class="rr"><span class="rp">${k+1}</span><span class="dot" style="background:${col}"></span><span>${n}${tg(t)}</span><span class="rt">${k===0?q[0]+" · ":""}${k<12?"Q2":"Q1"}</span></div>`};
   return c.map((x,k)=>row(k,x)).join("")+'<div class="note">Q2 : les 12 premiers · Q1 : les autres pilotes. Temps affiché : meilleur tour de la pole. Sources : Wikipédia, Crash.net.</div>';
 }
-document.getElementById("quals").innerHTML=RACES.map((r,i)=>{if(!QU[i])return"";const p=N[QU[i][1].split(" ")[0]],t=TEAM[p]||"",c=COL[t]||"#888";
-return `<div class="race" data-i="${i}"><div class="rd">${i+1}</div><div><div class="gp">GP ${r[0]}<span class="chev">▼</span></div><div class="dt">${r[1]} 2026</div></div><div class="win"><span class="dot" style="background:${c};display:inline-block;margin-right:5px"></span>${p}<small>Pole · ${QU[i][0]}</small></div><div class="det">${qdetail(i)}</div></div>`}).reverse().join("");
 document.getElementById("quals").addEventListener("click",e=>{const r=e.target.closest(".race");if(r)r.classList.toggle("open")});
+document.getElementById("races").addEventListener("click",e=>{const r=e.target.closest(".race");if(r)r.classList.toggle("open")});
+let UP=[["Australie (Phillip Island)","25 oct."],["Malaisie (Sepang)","1 nov."],["Qatar","8 nov."],["Portugal","22 nov."],["Valence","29 nov."]];
+let ENAME=[];
+function build(){
+  const op=[...document.querySelectorAll("#races .race.open,#quals .race.open")].map(e=>e.parentNode.id+e.dataset.i);
+  document.getElementById("sub").textContent="Après la manche "+DATA.round+"/"+DATA.total+" · "+DATA.after+" · "+DATA.date;
+  document.getElementById("nx").textContent=DATA.next;
+  document.getElementById("nd").textContent=DATA.nextDate;
+  render(document.getElementById("q").value);
+document.getElementById("quals").innerHTML=Array.from({length:QU.length},(_,i)=>{const r=RACES[i]||ENAME[i];if(!QU[i]||!r)return"";const p=N[QU[i][1].split(" ")[0]],t=TEAM[p]||"",c=COL[t]||"#888";
+return `<div class="race" data-i="${i}"><div class="rd">${i+1}</div><div><div class="gp">GP ${r[0]}<span class="chev">▼</span></div><div class="dt">${r[1]} 2026</div></div><div class="win"><span class="dot" style="background:${c};display:inline-block;margin-right:5px"></span>${p}<small>Pole · ${QU[i][0]}</small></div><div class="det">${qdetail(i)}</div></div>`}).reverse().join("");
 document.getElementById("races").innerHTML=RACES.map((r,i)=>{const c=COL[r[3]]||"#888";
 return `<div class="race" data-i="${i}"><div class="rd">${i+1}</div><div><div class="gp">GP ${r[0]}<span class="chev">▼</span></div><div class="dt">${r[1]} 2026</div></div><div class="win"><span class="dot" style="background:${c};display:inline-block;margin-right:5px"></span>${r[2]}<small>${r[3]}</small></div><div class="det">${detail(i)}</div></div>`}).reverse().join("");
-document.getElementById("races").addEventListener("click",e=>{const r=e.target.closest(".race");if(r)r.classList.toggle("open")});
 const T={};DATA.drivers.forEach(d=>T[d[1]]=(T[d[1]]||0)+d[2]);
 const TL=Object.entries(T).sort((a,b)=>b[1]-a[1]);
 document.getElementById("cons").innerHTML=TL.map((t,i)=>{const c=COL[t[0]]||"#888",gap=i?"−"+(TL[0][1]-t[1])+" pts":"Leader";
 return `<div class="row drv tm${OPEN.has("T:"+t[0])?" open":""}" data-t="${t[0]}" style="--tc:${c}"><div class="pos">${i+1}</div><div><div class="name"><span class="dot" style="background:${c}"></span>${t[0]}<span class="chev">▼</span></div><div class="bar"><i style="width:${t[1]/TL[0][1]*100}%;background:${c}"></i></div></div><div class="pts">${t[1]}<span class="gap">${gap}</span></div><div class="dh">${OPEN.has("T:"+t[0])?thist(t[0]):""}</div></div>`}).join("");
-const UP=[["Australie (Phillip Island)","25 oct."],["Malaisie (Sepang)","1 nov."],["Qatar","8 nov."],["Portugal","22 nov."],["Valence","29 nov."]];
 document.getElementById("cal").innerHTML=RACES.map((r,i)=>`<div class="crow done" data-g="${r[0]}"><span class="rp">${i+1}</span><div><b>GP ${r[0]}</b><small>Vainqueur : ${r[2]}</small></div><span class="d">${r[1]}</span><div class="cc"></div></div>`).join("")+UP.map((u,i)=>`<div class="crow${i?"":" nx"}" data-g="${u[0]}"><span class="rp">${RACES.length+i+1}</span><div><b>GP ${u[0]}</b><small>${i?"À venir":"Prochain Grand Prix"}</small></div><span class="d">${u[1]}</span><div class="cc"></div></div>`).join("");
+  document.querySelectorAll("#races .race,#quals .race").forEach(e=>{if(op.includes(e.parentNode.id+e.dataset.i))e.classList.add("open")});
+}
 document.getElementById("nextbox").onclick=function(){const c=document.getElementById("cal");c.hidden=!c.hidden;this.classList.toggle("open",!c.hidden)};
 function tab(n){["1","4","2","3"].forEach(k=>{document.getElementById("v"+k).hidden=k!=n;document.getElementById("t"+k).classList.toggle("on",k==n)})}
 ["1","4","2","3"].forEach(k=>document.getElementById("t"+k).onclick=()=>tab(k));
+build();
 
 /* ===== Fiche pilote : historique + photo ===== */
 const PH={};
@@ -396,6 +401,84 @@ document.getElementById("cal").addEventListener("click",e=>{
   r.classList.toggle("open");
   if(r.classList.contains("open")){r.querySelector(".cc").innerHTML=ccHTML(r.dataset.g);circ(r.dataset.g)}
 });
+
+/* ===== Mise à jour en direct (API officielle MotoGP) ===== */
+const API="https://api.motogp.pulselive.com/motogp/v1/results";
+async function J(p){
+  const c=new AbortController(),t=setTimeout(()=>c.abort(),9000);
+  try{const r=await fetch(API+p,{signal:c.signal});if(!r.ok)throw new Error(r.status);return await r.json()}
+  finally{clearTimeout(t)}
+}
+const nz=s=>String(s||"").replace(/ı/g,"i").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z ]/g,"").trim();
+const GPFR={THA:"Thaïlande",BRA:"Brésil",USA:"États-Unis",SPA:"Espagne",FRA:"France",CAT:"Catalogne",ITA:"Italie",HUN:"Hongrie",CZE:"Tchéquie",NED:"Pays-Bas",GER:"Allemagne",GBR:"Grande-Bretagne",ARA:"Aragon",RSM:"Saint-Marin",AUT:"Autriche",JPN:"Japon",INA:"Indonésie",AUS:"Australie (Phillip Island)",MAL:"Malaisie (Sepang)",MAS:"Malaisie (Sepang)",QAT:"Qatar",POR:"Portugal",VAL:"Valence"};
+const gpName=e=>GPFR[e.short_name]||String(e.name||"").replace(/^GRAND PRIX (OF|DE) (THE )?/i,"").toLowerCase().replace(/^./,c=>c.toUpperCase());
+const shortGP=n=>n.replace(/ \(.*\)$/,"");
+const tn=n=>{n=String(n||"");return /tech3/i.test(n)?"KTM Tech3":/trackhouse/i.test(n)?"Trackhouse":/aprilia/i.test(n)?"Aprilia Racing":/ducati/i.test(n)?"Ducati Lenovo Team":/gresini/i.test(n)?"Gresini":/vr46/i.test(n)?"VR46":/pramac/i.test(n)?"Pramac Yamaha":/yamaha/i.test(n)?"Yamaha":/lcr/i.test(n)?"LCR Honda":/honda/i.test(n)?"Honda HRC":/ktm/i.test(n)?"Red Bull KTM Factory":n};
+const fd=(d,o)=>new Date(d+"T12:00:00Z").toLocaleDateString("fr-FR",Object.assign({timeZone:"UTC"},o));
+const shortD=d=>fd(d,{day:"numeric",month:"short"});
+const longD=d=>fd(d,{day:"numeric",month:"long",year:"numeric"});
+function reg(x){
+  const r=x.rider,k=nz(r.full_name);
+  let c=Object.keys(N).find(z=>nz(N[z])===k);
+  if(!c){
+    const base=String(r.full_name.split(" ").pop()||"XXX").normalize("NFD").replace(/[^A-Za-z]/g,"").toUpperCase().padEnd(3,"X");
+    c=base.slice(0,3);let j=0;while(N[c]){c=base.slice(0,2)+String.fromCharCode(65+j++)}
+    N[c]=r.full_name;
+  }
+  if(x.team&&!TEAM[N[c]])TEAM[N[c]]=tn(x.team.name);
+  return c;
+}
+const byPos=(a,b)=>(a.position||999)-(b.position||999);
+async function cls(id){return ((await J("/session/"+id+"/classification?test=false")).classification||[])}
+async function qualOf(ss){
+  const q2=ss.find(s=>s.type==="Q"&&s.number===2),q1=ss.find(s=>s.type==="Q"&&s.number===1);
+  if(!q2||q2.status!=="FINISHED")return null;
+  const c2=(await cls(q2.id)).sort(byPos);if(!c2.length)return null;
+  const a=c2.map(reg),t=((c2[0].best_lap||{}).time||"").replace(/^0/,"");
+  if(q1){(await cls(q1.id)).sort(byPos).forEach(x=>{const c=reg(x);if(!a.includes(c))a.push(c)})}
+  return [t,a.join(" ")];
+}
+async function live(){
+  const ss0=await J("/seasons"),se=ss0.find(s=>s.current)||ss0[0];
+  const cats=await J("/categories?seasonUuid="+se.id),cat=cats.find(c=>c.legacy_id===3)||cats.find(c=>/^motogp/i.test(c.name));
+  const st=await J("/standings?seasonUuid="+se.id+"&categoryUuid="+cat.id);
+  const sl=(st.classification||[]).filter(x=>+x.points>0).sort(byPos);
+  if(!sl.length)throw new Error("vide");
+  const drivers=sl.map(x=>{const c=reg(x),n=N[c];TEAM[n]=tn(x.team.name);return [n,TEAM[n],+x.points]});
+  const ev=(await J("/events?seasonUuid="+se.id)).filter(e=>!e.test).sort((a,b)=>a.date_start<b.date_start?-1:1);
+  const fin=ev.filter(e=>e.status==="FINISHED"),round=fin.length;
+  const rows=[],res=[],qu=[],nm=[];
+  ev.forEach((e,i)=>nm[i]=[gpName(e),shortD(e.date_end)]);
+  for(let i=0;i<round;i++){
+    const e=fin[i],hasR=RES[i]&&RACES[i];
+    if(hasR&&QU[i]){rows[i]=RACES[i];res[i]=RES[i];qu[i]=QU[i];continue}
+    const ss=await J("/sessions?eventUuid="+e.id+"&categoryUuid="+cat.id);
+    if(hasR){rows[i]=RACES[i];res[i]=RES[i]}
+    else{
+      const rac=ss.find(s=>s.type==="RAC");if(!rac)continue;
+      const cl=(await cls(rac.id)),ok=[],ko=[];
+      cl.slice().sort(byPos).forEach(x=>{const c=reg(x);(x.position?ok:ko).push(c)});
+      res[i]=ok.join(" ")+(ko.length?" | "+ko.join(" "):"");
+      const w=cl.slice().sort(byPos)[0];
+      rows[i]=[shortGP(gpName(e)),shortD(e.date_end),N[reg(w)],TEAM[N[reg(w)]]||tn(w.team.name)];
+    }
+    qu[i]=QU[i]||(await qualOf(ss).catch(()=>null))||undefined;
+  }
+  // week-end en cours : qualifications déjà disputées
+  const cur=ev[round];
+  if(cur&&cur.status!=="NOT-STARTED"){
+    try{const ss=await J("/sessions?eventUuid="+cur.id+"&categoryUuid="+cat.id);const q=await qualOf(ss);if(q)qu[round]=q}catch(e){}
+  }
+  for(let i=0;i<round;i++){if(!rows[i])rows[i]=RACES[i];if(!res[i])res[i]=RES[i]}
+  const up=ev.slice(round).map((e,i)=>[gpName(e),shortD(e.date_end)]);
+  const last=fin[round-1],nxt=ev[round];
+  DATA={round,total:ev.length,after:"GP "+shortGP(gpName(last)),date:longD(last.date_end),
+    next:nxt?gpName(nxt):"Saison terminée",nextDate:nxt?longD(nxt.date_end):"",drivers};
+  RACES=rows.filter(Boolean);RES=res;QU=qu;UP=up;ENAME=nm;
+  build();
+  document.querySelector(".foot").textContent="Données en direct ✓ · actualisées à "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+}
+live().catch(()=>{document.querySelector(".foot").textContent="Données en direct indisponibles : dernières données intégrées affichées."});
 </script>
 <script>if("serviceWorker"in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{})</script>
 </body>
