@@ -403,11 +403,16 @@ document.getElementById("cal").addEventListener("click",e=>{
 });
 
 /* ===== Mise à jour en direct (API officielle MotoGP) ===== */
-const API="https://api.motogp.pulselive.com/motogp/v1/results";
+const APIS=["https://api.motogp.pulselive.com/motogp/v1/results","https://api.pulselive.motogp.com/motogp/v1/results"];
+let API=APIS[0];
 async function J(p){
-  const c=new AbortController(),t=setTimeout(()=>c.abort(),9000);
-  try{const r=await fetch(API+p,{signal:c.signal});if(!r.ok)throw new Error(r.status);return await r.json()}
-  finally{clearTimeout(t)}
+  let err;
+  for(const base of [API,...APIS.filter(x=>x!==API)]){
+    const c=new AbortController(),t=setTimeout(()=>c.abort(),9000);
+    try{const r=await fetch(base+p,{signal:c.signal});if(!r.ok)throw new Error("HTTP "+r.status);const j=await r.json();API=base;return j}
+    catch(e){err=e}finally{clearTimeout(t)}
+  }
+  throw err;
 }
 const nz=s=>String(s||"").replace(/ı/g,"i").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z ]/g,"").trim();
 const GPFR={THA:"Thaïlande",BRA:"Brésil",USA:"États-Unis",SPA:"Espagne",FRA:"France",CAT:"Catalogne",ITA:"Italie",HUN:"Hongrie",CZE:"Tchéquie",NED:"Pays-Bas",GER:"Allemagne",GBR:"Grande-Bretagne",ARA:"Aragon",RSM:"Saint-Marin",AUT:"Autriche",JPN:"Japon",INA:"Indonésie",AUS:"Australie (Phillip Island)",MAL:"Malaisie (Sepang)",MAS:"Malaisie (Sepang)",QAT:"Qatar",POR:"Portugal",VAL:"Valence"};
@@ -478,7 +483,7 @@ async function live(){
   build();
   document.querySelector(".foot").textContent="Données en direct ✓ · actualisées à "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
 }
-live().catch(()=>{document.querySelector(".foot").textContent="Données en direct indisponibles : dernières données intégrées affichées."});
+live().catch(e=>{document.querySelector(".foot").textContent="Données en direct indisponibles ("+((e&&e.message)||e)+") : dernières données intégrées affichées."});
 </script>
 <script>if("serviceWorker"in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(()=>{})</script>
 </body>
